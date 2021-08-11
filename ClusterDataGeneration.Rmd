@@ -1,5 +1,5 @@
 ---
-title: "MLCD assignment"
+title: "Cluster Data Generation"
 author: ""
 date: "5/28/2021"
 output: pdf_document
