@@ -1,0 +1,208 @@
+---
+title: "MLCD assignment"
+author: ""
+date: "5/28/2021"
+output: pdf_document
+---
+
+```{r}
+
+library(philentropy)
+set.seed(500)
+
+###### CLUSTER GENERATION FUNCTION ######
+clust.gen <- function(d, dMatrix, CN, CL, CR, noise) {
+  dfinal <- c()
+  for (k in 1:d){
+    rfinal <- c()
+    for(i in 1:CN) {
+      
+      centres <- runif(1, 0, 90)
+      prelim <- c()
+      for (j in 1:CL[i]) {
+
+        if(dMatrix[k,i]==1){
+          alpha <- 2 * pi * runif(1, 1, 5)
+          r <- CR[i] * sqrt(runif(1, 1, 2))
+          x <- r * cos(alpha) + centres
+        }else{
+          x <- runif(1,0,100)
+        }
+        
+        prelim<-rbind(prelim, x)
+      }
+      
+      startp <- as.integer(runif(1,1,CL-noise))
+      endp <- as.integer(startp + noise)
+      for(m in startp:endp) {
+        prelim[m] <- prelim[m] * runif(1, -1, 1.5) + runif(1, 4, 4)
+      }
+      
+      rfinal <- rbind(rfinal, prelim)
+    }
+    
+    dfinal <- cbind(dfinal, rfinal)
+  }
+  return(dfinal)
+}
+
+###### FIND RATIO FUNCTION ######
+findRatioDistance <- function(ch, usedmethod){
+  mydist <- distance(ch, method = usedmethod)
+  
+  maxdist <- apply(mydist, 2, max)
+  maxdistance <<- append(maxdistance, max(maxdist))
+  print (maxdistance)
+  
+  mindist <- apply(mydist, 2, function(mydist) min(mydist[mydist>0]))
+  mindistance <<- append(mindistance, min(mindist))
+  
+  meandistance <<- append(meandistance, mean(mydist))
+
+  ratiodist <- maxdist/mindist
+  
+  return (ratiodist)
+}
+
+######PLOT DATASETS FUNCTION ######
+plotcdf <- function(cdf){
+  dev.new()
+  par(mfrow=c(2,2))
+  plot(cdf[,1], cdf[,2])
+  
+  plot(cdf[,1], cdf[,3])
+  
+  plot(cdf[,2], cdf[,3])  
+}
+
+```
+
+```{r}
+###### INITIALIZATIONS ######
+mindistance <- c()
+maxdistance <- c()
+meandistance <- c()
+dims <- c()
+
+## method choice
+distancemethod = "euclidean"
+#distancemethod = "manhattan"
+#distancemethod = "maximum"
+
+# CL: holds the length of each cluster
+CL <- c(50, 75, 100)
+# CR: holds the radius of each cluster
+CR <- c(3, 2, 3)
+# CN: is the number of the clusters
+CN <- length(CL)
+
+###### DATASETS DEFINITION SECTION ######
+###### 3 Dimensions ######
+d = 3
+dims <- append(dims, d)
+# the following vectors should hold 1 when the cluster is relevant to the dimension in each position
+# ex. C1 is relevant is d1 and d2, but not in d3
+C1 <- c(1,1,0)
+C2 <- c(1,1,1)
+C3 <- c(0,1,1)
+
+# dMatrix: dimensionality matrix shows the relation between the different clusters and dimensions
+dMatrix <- matrix(c(C1, C2, C3), nrow = d)
+print (dMatrix)
+
+cdf3 <- clust.gen(d, dMatrix, CN, CL, CR, 4)
+
+pairs(cdf3)
+
+
+###### 8 Dimensions ######
+d = 8
+dims <- append(dims, d)
+C1 <- c(1,1,0,0,0,0,0,0)
+C2 <- c(1,1,1,0,0,0,0,0)
+C3 <- c(0,1,1,0,0,0,0,0)
+#C1 <- c(1,1,0,1,1,1,1,1)
+#C2 <- c(1,1,1,1,1,1,1,1)
+#C3 <- c(0,1,1,1,1,1,1,1)
+dMatrix8 <- matrix(c(C1, C2, C3), nrow = d)
+print(dMatrix8)
+
+cdf8 <- clust.gen(d, dMatrix8, CN, CL, CR, 4)
+pairs(cdf8)
+
+
+###### 15 Dimensions ######
+d = 15
+dims <- append(dims, d)
+C1 <- c(1,1,0,0,0,0,0,0,0,0,0,0,0,0,0)
+C2 <- c(1,1,1,0,0,0,0,0,0,0,0,0,0,0,0)
+C3 <- c(0,1,1,0,0,0,0,0,0,0,0,0,0,0,0)
+#C1 <- c(1,1,0,1,1,1,1,1,1,1,1,1,1,1,1)
+#C2 <- c(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
+#C3 <- c(0,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
+
+dMatrix15 <- matrix(c(C1, C2, C3), nrow = d)
+print(dMatrix15)
+
+cdf15 <- clust.gen(d, dMatrix15, CN, CL, CR, 4)
+pairs(cdf15)
+
+
+###### 20 Dimensions ######
+d = 20
+dims <- append(dims, d)
+C1 <- c(1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)
+C2 <- c(1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)
+C3 <- c(0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)
+#C1 <- c(1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
+#C2 <- c(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
+#C3 <- c(0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
+
+dMatrix20 <- matrix(c(C1, C2, C3), nrow = d)
+print(dMatrix20)
+
+cdf20 <- clust.gen(d, dMatrix20, CN, CL, CR, 4)
+pairs(cdf20)
+
+
+###### 30 Dimensions ######
+d = 30
+dims <- append(dims, d)
+C1 <- c(1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)
+C2 <- c(1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)
+C3 <- c(0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)
+#C1 <- c(1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
+#C2 <- c(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
+#C3 <- c(0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
+
+dMatrix30 <- matrix(c(C1, C2, C3), nrow = d)
+print (dMatrix30)
+
+cdf30 <- clust.gen(d, dMatrix30, CN, CL, CR, 4)
+
+```
+
+
+```{r}
+
+# Using K means to find the clusters
+
+require(vegan)
+
+clust.num <- function(df) {
+  
+  fit <- cascadeKM(scale(df, center = TRUE,  scale = TRUE), 1, 10, iter = 1000)
+  calinski.best <- as.numeric(which.max(fit$results[2,]))
+  return(calinski.best)
+  
+  
+}
+
+kmeans(cdf3, clust.num(cdf3))
+kmeans(cdf8, clust.num(cdf8))
+kmeans(cdf15, clust.num(cdf8))
+kmeans(cdf20, clust.num(cdf8))
+kmeans(cdf30, clust.num(cdf8))
+```
+
+
