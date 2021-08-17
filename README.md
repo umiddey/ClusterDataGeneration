@@ -3,10 +3,12 @@ Objective:
 The goal of this project was to make a data generating process that creates a dataframe of dimension d with hidden clusters of radius r and noise n. 
 
 Process:
+
 A dataframe-creating function was developed that took 6 input parameters, namely the dimension of the dataframe, the dimension matrix, the number of clusters in the subspace, the length of the corresponding cluster and also the radius of the corresponding cluster. 
 The intuition of the process was to generate a random point in space and then pick out random datapoints around it. The range was determined with the radius while the angle was generated randomly. With that, we were able to extract random datapoints within a certain radius of a centre point. 
 
 Results:
+
 After building the function, we created 5 dataframes. The dimension of the dataframes are 3, 8, 15, 20, and 30, with three clusters in each subspace with lengths of 50, 75 and 100, respectively. The radius of each cluster was set at 3, 2, and 3.
 After creating the dataframe, we attempted to visualize it and, as a result, made some interesting observations.  As the dimension of the dataframe kept growing, the clusters became less differentiable. Indeed, the most visibly clustered dataframe was the one with the lowest dimension.
 Finally, k-means clustering was applied to the model. In order to find out the most adequate number of cluster, the R function cascadeKM from the vegan package was applied on the datasets. 
