@@ -205,4 +205,12 @@ kmeans(cdf20, clust.num(cdf8))
 kmeans(cdf30, clust.num(cdf8))
 ```
 
+```{r}
+kmeans(cdf3, 3)
+kmeans(cdf8, 3)
+kmeans(cdf15, 3)
+kmeans(cdf20, 3)
+kmeans(cdf30, 3)
+```
+
 
